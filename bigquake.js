@@ -1,10 +1,12 @@
+// Store our API endpoint inside queryUrl
+//var queryUrl = "http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2014-01-01&endtime=" +
+//  "2014-01-02&maxlongitude=-69.52148437&minlongitude=-123.83789062&maxlatitude=48.74894534&minlatitude=25.16517337";
 var queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_week.geojson";
-
+// Perform a GET request to the query URL
 d3.json(queryUrl, function(data) {
   // Once we get a response, send the data.features object to the createFeatures function
   createFeatures(data.features);
 });
-
 
 function createFeatures(earthquakeData) {
 
@@ -27,17 +29,26 @@ function createFeatures(earthquakeData) {
 
 function createMap(earthquakes) {
 
-  // Define streetmap
-  var lightmap = L.tileLayer("http://api.mapbox.com/v4/mapbox.light.html?access_token=pk.eyJ1IjoibGVodWdoZXMwNCIsImEiOiJjamViam95dTMwZ21sMnpta3puMnk0bTNuIn0.Xmxmk_XBm7cKlyLgXqkbYg#3/0.00/0.00");
+  // Define streetmap and darkmap layers
+  var streetmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/outdoors-v10/tiles/256/{z}/{x}/{y}?" +
+    "access_token=pk.eyJ1IjoibGVodWdoZXMwNCIsImEiOiJjamVxaWxvenYwcG4wMnZwZ3plYjdmYjNwIn0.1DDfAxtSM5ipCStcNLNCvA");
 	
-	var piratemap = L.tileLayer("http://api.mapbox.com/v4/mapbox.pirates.html?access_token=pk.eyJ1IjoibGVodWdoZXMwNCIsImEiOiJjamViam95dTMwZ21sMnpta3puMnk0bTNuIn0.Xmxmk_XBm7cKlyLgXqkbYg#3/0.00/0.00");
+  var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}?" +
+    "access_token=pk.eyJ1IjoibGVodWdoZXMwNCIsImEiOiJjamVxaWxvenYwcG4wMnZwZ3plYjdmYjNwIn0.1DDfAxtSM5ipCStcNLNCvA");
 
-     // Define a baseMaps object to hold our base layers
+  var darkmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/dark-v9/tiles/256/{z}/{x}/{y}?" +
+    "access_token=pk.eyJ1IjoibGVodWdoZXMwNCIsImEiOiJjamVxaWxvenYwcG4wMnZwZ3plYjdmYjNwIn0.1DDfAxtSM5ipCStcNLNCvA");
+	
+  var satellitemap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?" +
+    "access_token=pk.eyJ1IjoibGVodWdoZXMwNCIsImEiOiJjamVxaWxvenYwcG4wMnZwZ3plYjdmYjNwIn0.1DDfAxtSM5ipCStcNLNCvA");
+	
+  // Define a baseMaps object to hold our base layers
   var baseMaps = {
-    "Light Map": lightmap,
-    "Pirate Map": piratemap
+    "Street Map": streetmap,
+    "Dark Map": darkmap,
+	"Light Map": lightmap,
+	"Sat Map": satellitemap
   };
-
 
   // Create overlay object to hold our overlay layer
   var overlayMaps = {
@@ -49,7 +60,7 @@ function createMap(earthquakes) {
     center: [
       37.09, -95.71
     ],
-    zoom: 5,
+    zoom: 3,
     layers: [lightmap, earthquakes]
   });
 
